@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block page_styles %}{% endblock %}
+
+{% block page_name %}Splinter Data Table{% endblock %}
+
+{% block page_buttons %}{% endblock %}
+
+{% block content %}
+
+
+<table class="table table-hover" id="main-table">
+  <thead>
+    <tr>
+      <th scope="col">Tag Name</th>
+      <th scope="col">Tag Value</th>
+      <th scope="col">Timestamp</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for reading in data %}
+        {% if reading.tag_name == "E-Stop" and reading.tag_value == 1 %}
+        <tr class="table-danger">
+          <td>{{reading.tag_name}}</td>
+          <td>{{reading.tag_value}}</td>
+          <td>{{reading.timestamp| date:'Y-m-d H:i:s A'}}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td>{{reading.tag_name}}</td>
+          <td>{{reading.tag_value}}</td>
+          <td>{{reading.timestamp| date:'Y-m-d H:i:s A'}}</td>
+        </tr>
+        {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+
+{% block page_scripts %}
+<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+  <script type="text/javascript">
+  $( document ).ready(function() {
+            setInterval(function(){
+                // Reload the table of values
+                $("#main-table").load(" #main-table");
+            }, 2000);
+    });
+  </script>
+{% endblock %}

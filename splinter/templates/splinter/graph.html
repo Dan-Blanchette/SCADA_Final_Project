@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block page_styles %}
+
+{% endblock %}
+
+{% block page_name %}Splinter Graph{% endblock %}
+
+{% block page_buttons %}
+
+{% endblock %}
+
+{% block content %}
+
+{% if not values %}
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+  <strong>No Tags to Graph</strong> Choose a tag to graph from below
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+<form method="post">
+  {% csrf_token %}
+  <label for="tag_name" class="d-inline">Tag Name: </label>
+  <select id="tag_name" name="tag_name" class="form-select w-25 p-3 d-inline" required>
+    <option disabled selected value> -- select an option -- </option></option>
+      {% for tag in tag_options %}
+        <option label ="{{ tag }}">{{ tag }}</option>
+      {% endfor %}
+  </select>
+  <input type="submit" value="Submit" class="btn btn-primary btn-large d-inline">
+</form>
+
+{% if values %}
+  <div id="myDiv"></div>
+{% endif %}
+
+{% endblock %}
+
+{% block page_scripts %}
+<script src="https://cdn.plot.ly/plotly-2.31.1.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+
+  var timestamp_list = {{ timestamps | safe }};
+  var value_list = {{ values| safe }};
+  var chosen_tag = "{{ chosen_tag | safe }}";
+
+  var trace1 = {
+    x: timestamp_list,
+    y: value_list,
+    type: 'scatter'
+  };
+
+  var layout = {
+      title: {
+        text: chosen_tag + ' History',
+        font: {
+            family: 'Courier New, monospace',
+            size: 36
+        },
+      }
+    }
+
+  var data = [trace1];
+
+  Plotly.newPlot('myDiv', data, layout);
+
+  $('.alert').alert()
+</script>
+
+{% endblock %}
